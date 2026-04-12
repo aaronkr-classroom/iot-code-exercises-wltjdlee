@@ -1,0 +1,66 @@
+class SayDays:
+    def __init__(self, year, month, day):
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def _is_leap_year(self):
+        if (self.year % 4 == 0 and self.year % 100 != 0) or (self.year % 400 == 0):
+            return True
+        return False
+
+    def days(self):
+        days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        if self._is_leap_year():
+            days_in_month[1] = 29
+            
+        total_days = 0
+        for i in range(self.month - 1):
+            total_days += days_in_month[i]
+            
+        total_days += self.day
+        return total_days
+
+    def days_left(self):
+        total_days_in_year = 366 if self._is_leap_year() else 365
+        return total_days_in_year - self.days()
+
+    def weekday(self):
+        y = self.year
+        m = self.month
+        q = self.day
+
+        if m == 1 or m == 2:
+            m += 12
+            y -= 1
+
+        h = (q + (13 * (m + 1)) // 5 + y + (y // 4) - (y // 100) + (y // 400)) % 7
+        return h
+
+    def weekday_name(self):
+        week_dict = {
+            0: "토요일", 1: "일요일", 2: "월요일", 
+            3: "화요일", 4: "수요일", 5: "목요일", 6: "금요일"
+        }
+        return week_dict[self.weekday()]
+
+
+while True:
+    user_input = input("임의의 날짜를 입력하세요 (예: 2024 10 24 / 멈추려면 'q'): ")
+    
+    if user_input.lower() == 'q':
+        print("프로그램을 종료합니다.")
+        break
+        
+    try:
+        y, m, d = map(int, user_input.split())
+        sd = SayDays(y, m, d)
+        
+        print(f"days() : {sd.days()}")
+        print(f"days_left() : {sd.days_left()}")
+        print(f"weekday() : {sd.weekday()}")
+        print(f"weekday_name() : {sd.weekday_name()}")
+        print("=" * 30)
+        
+    except ValueError:
+        print("입력 형식이 틀렸습니다. 숫자 3개를 띄어쓰기로 구분해서 입력해주세요.")
